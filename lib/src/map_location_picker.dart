@@ -279,7 +279,9 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
       if (response.results.length > 1) {
         _geocodingResultList = response.results;
       }
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       logger.e(e);
     }
@@ -331,7 +333,9 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition()));
       _address = response.result.formattedAddress ?? "";
       widget.onSuggestionSelected?.call(response);
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       logger.e(e);
     }
@@ -371,7 +375,9 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                     CameraUpdate.newCameraPosition(cameraPosition()));
                 _decodeAddress(
                     Location(lat: position.latitude, lng: position.longitude));
-                setState(() {});
+                if (mounted) {
+                  setState(() {});
+                }
               },
               onMapCreated: (GoogleMapController controller) async {
                 _controller.complete(controller);
@@ -453,7 +459,9 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                     TextSelection.collapsed(
                                         offset: _searchController.text.length);
                                 _getDetailsByPlaceId(value.placeId ?? "");
-                                setState(() {});
+                                if (mounted) {
+                                  setState(() {});
+                                }
                               },
                               hideSuggestionsOnKeyboardHide:
                                   widget.hideSuggestionsOnKeyboardHide,
@@ -483,9 +491,11 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                         onSelected: (MapType mapType) {
-                          setState(() {
-                            _mapType = mapType;
-                          });
+                          if (mounted) {
+                            setState(() {
+                              _mapType = mapType;
+                            });
+                          }
                         },
                         itemBuilder: (context) => const [
                           PopupMenuItem(
@@ -528,7 +538,9 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                           CameraUpdate.newCameraPosition(cameraPosition()));
                       _decodeAddress(Location(
                           lat: position.latitude, lng: position.longitude));
-                      setState(() {});
+                      if (mounted) {
+                        setState(() {});
+                      }
                     },
                     child: const Icon(Icons.my_location),
                   ),
@@ -570,7 +582,9 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                         _address =
                                             element.formattedAddress ?? "";
                                         _geocodingResult = element;
-                                        setState(() {});
+                                        if (mounted) {
+                                          setState(() {});
+                                        }
                                         Navigator.pop(context);
                                       },
                                     );
