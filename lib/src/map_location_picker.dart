@@ -578,17 +578,20 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                     return ListTile(
                                       title:
                                           Text(element.formattedAddress ?? ""),
-                                      onTap: () {
+                                      onTap: () async {
                                         _address =
                                             element.formattedAddress ?? "";
                                         _geocodingResult = element;
                                         if (mounted) {
                                           setState(() {});
                                         }
-                                        Future.delayed(
-                                            Duration(milliseconds: 700), () {
-                                          Navigator.pop(context);
-                                        });
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    CircularProgressIndicator()));
+                                        await Future.delayed(
+                                            Duration(milliseconds: 500));
+                                        Navigator.of(context).pop();
                                       },
                                     );
                                   }).toList(),
@@ -596,11 +599,14 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                 actions: [
                                   TextButton(
                                     child: const Text('Cancel'),
-                                    onPressed: () {
-                                      Future.delayed(
-                                          Duration(milliseconds: 700), () {
-                                        Navigator.pop(context);
-                                      });
+                                    onPressed: () async {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  CircularProgressIndicator()));
+                                      await Future.delayed(
+                                          Duration(milliseconds: 500));
+                                      Navigator.of(context).pop();
                                     },
                                   ),
                                 ],
