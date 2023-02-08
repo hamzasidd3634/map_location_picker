@@ -585,7 +585,10 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                         if (mounted) {
                                           setState(() {});
                                         }
-                                        Navigator.pop(context);
+                                        Future.delayed(
+                                            Duration(milliseconds: 700), () {
+                                          Navigator.pop(context);
+                                        });
                                       },
                                     );
                                   }).toList(),
@@ -594,7 +597,10 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                   TextButton(
                                     child: const Text('Cancel'),
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      Future.delayed(
+                                          Duration(milliseconds: 700), () {
+                                        Navigator.pop(context);
+                                      });
                                     },
                                   ),
                                 ],
