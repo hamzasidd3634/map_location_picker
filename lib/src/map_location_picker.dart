@@ -1,17 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
 import 'package:flutter/services.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+=======
+>>>>>>> Stashed changes
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart';
 import "package:google_maps_webservice/geocoding.dart";
 import 'package:google_maps_webservice/places.dart';
-import 'package:http/http.dart';
-import 'package:provider/provider.dart';
-
 import 'logger.dart';
-import 'provider.dart';
+import 'autocomplete_view.dart';
 
 class MapLocationPicker extends StatefulWidget {
   /// Padding around the map
@@ -81,9 +82,13 @@ class MapLocationPicker extends StatefulWidget {
   final Function(PlacesDetailsResponse?)? onSuggestionSelected;
 
   /// On Next Page callback
+<<<<<<< Updated upstream
   final Function(
     GeocodingResult?,
   ) onNext;
+=======
+  final Function(GeocodingResult?) onNext;
+>>>>>>> Stashed changes
 
   /// Show back button (default: true)
   final bool showBackButton;
@@ -120,6 +125,10 @@ class MapLocationPicker extends StatefulWidget {
   /// origin: Location(lat: -33.852, lng: 151.211),
   final Location? origin;
 
+  /// currentLatLng init location for camera position
+  /// currentLatLng: Location(lat: -33.852, lng: 151.211),
+  final LatLng? currentLatLng;
+
   /// Location bounds for restricting results to a radius around a location
   /// location: Location(lat: -33.867, lng: 151.195)
   final Location? location;
@@ -152,12 +161,25 @@ class MapLocationPicker extends StatefulWidget {
   /// Hide Suggestions on keyboard hide
   final bool hideSuggestionsOnKeyboardHide;
 
+<<<<<<< Updated upstream
   ///map style
   String? mapStyle;
 
   /// map ontap function
   bool onTap;
   MapLocationPicker({
+=======
+  /// Map type (default: MapType.normal)
+  final MapType mapType;
+
+  /// Search text field controller
+  final TextEditingController? searchController;
+
+  /// Add your own custom markers
+  final Map<String, LatLng>? additionalMarkers;
+
+  const MapLocationPicker({
+>>>>>>> Stashed changes
     Key? key,
     this.desiredAccuracy = LocationAccuracy.high,
     required this.apiKey,
@@ -187,6 +209,7 @@ class MapLocationPicker extends StatefulWidget {
     this.bottomCardColor,
     this.onSuggestionSelected,
     required this.onNext,
+    this.currentLatLng = const LatLng(28.8993468, 76.6250249),
     this.showBackButton = true,
     this.canPopOnNextButtonTaped = false,
     this.backButton,
@@ -206,7 +229,13 @@ class MapLocationPicker extends StatefulWidget {
     this.components = const [],
     this.strictbounds = false,
     this.hideSuggestionsOnKeyboardHide = false,
+<<<<<<< Updated upstream
     this.onTap = true,
+=======
+    this.mapType = MapType.normal,
+    this.searchController,
+    this.additionalMarkers,
+>>>>>>> Stashed changes
   }) : super(key: key);
 
   @override
@@ -228,10 +257,8 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
   /// Map controller for movement & zoom
   final Completer<GoogleMapController> _controller = Completer();
 
-  /// Search text field controller
-  final TextEditingController _searchController = TextEditingController();
-
   /// initial latitude & longitude
+<<<<<<< Updated upstream
   LatLng? _initialPosition;
 
   currentPositionLatLng() async {
@@ -250,29 +277,39 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
       setState(() {});
     } else {}
   }
+=======
+  late LatLng _initialPosition = const LatLng(28.8993468, 76.6250249);
+>>>>>>> Stashed changes
 
   /// initial address text
-  String _address = "Tap on map to get address";
+  late String _address = "Tap on map to get address";
 
   /// Map type (default: MapType.normal)
-  MapType _mapType = MapType.normal;
+  late MapType _mapType = MapType.normal;
 
   /// initial zoom level
-  double _zoom = 18.0;
+  late double _zoom = 18.0;
 
   /// GeoCoding result for further use
   GeocodingResult? _geocodingResult;
 
   /// GeoCoding results list for further use
-  List<GeocodingResult> _geocodingResultList = [];
+  late List<GeocodingResult> _geocodingResultList = [];
 
   /// Camera position moved to location
   CameraPosition cameraPosition() {
     return CameraPosition(
+<<<<<<< Updated upstream
       target: _initialPosition!,
+=======
+      target: _initialPosition,
+>>>>>>> Stashed changes
       zoom: _zoom,
     );
   }
+
+  /// Search text field controller
+  late TextEditingController _searchController = TextEditingController();
 
   /// Decode address from latitude & longitude
   void _decodeAddress(Location location) async {
@@ -315,6 +352,7 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
         _geocodingResultList = response.results;
       }
       setState(() {});
+<<<<<<< Updated upstream
     } catch (e) {
       logger.e(e);
     }
@@ -367,6 +405,8 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
       _address = response.result.formattedAddress ?? "";
       widget.onSuggestionSelected?.call(response);
       setState(() {});
+=======
+>>>>>>> Stashed changes
     } catch (e) {
       logger.e(e);
     }
@@ -381,7 +421,16 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
   // }
 
   @override
+  void initState() {
+    _initialPosition = widget.currentLatLng ?? _initialPosition;
+    _mapType = widget.mapType;
+    _searchController = widget.searchController ?? _searchController;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+<<<<<<< Updated upstream
     return _initialPosition != null
         ? MultiProvider(
             providers: [
@@ -515,10 +564,243 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                   );
                                 },
                               ),
+=======
+    final additionalMarkers = widget.additionalMarkers?.entries
+            .map(
+              (e) => Marker(
+                markerId: MarkerId(e.key),
+                position: e.value,
+              ),
+            )
+            .toList() ??
+        [];
+
+    final markers = Set<Marker>.from(additionalMarkers);
+
+    markers.add(Marker(
+      markerId: const MarkerId("one"),
+      position: _initialPosition,
+    ));
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          /// Google map view
+          GoogleMap(
+            minMaxZoomPreference: widget.minMaxZoomPreference,
+            onCameraMove: (CameraPosition position) {
+              /// set zoom level
+              _zoom = position.zoom;
+            },
+            initialCameraPosition: CameraPosition(
+              target: _initialPosition,
+              zoom: _zoom,
+            ),
+            onTap: (LatLng position) async {
+              _initialPosition = position;
+              final controller = await _controller.future;
+              controller.animateCamera(
+                  CameraUpdate.newCameraPosition(cameraPosition()));
+              _decodeAddress(
+                  Location(lat: position.latitude, lng: position.longitude));
+              setState(() {});
+            },
+            onMapCreated: (GoogleMapController controller) async {
+              _controller.complete(controller);
+            },
+            markers: {
+              Marker(
+                markerId: const MarkerId('one'),
+                position: _initialPosition,
+              ),
+            },
+            myLocationButtonEnabled: false,
+            myLocationEnabled: true,
+            zoomControlsEnabled: false,
+            padding: widget.padding,
+            compassEnabled: widget.compassEnabled,
+            liteModeEnabled: widget.liteModeEnabled,
+            mapType: widget.mapType,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              PlacesAutocomplete(
+                apiKey: widget.apiKey,
+                mounted: mounted,
+                searchController: _searchController,
+                borderRadius: widget.borderRadius,
+                offset: widget.offset,
+                radius: widget.radius,
+                backButton: widget.backButton,
+                components: widget.components,
+                fields: widget.fields,
+                hideSuggestionsOnKeyboardHide:
+                    widget.hideSuggestionsOnKeyboardHide,
+                language: widget.language,
+                location: widget.location,
+                origin: widget.origin,
+                placesApiHeaders: widget.placesApiHeaders,
+                placesBaseUrl: widget.placesBaseUrl,
+                placesHttpClient: widget.placesHttpClient,
+                region: widget.region,
+                searchHintText: widget.searchHintText,
+                sessionToken: widget.sessionToken,
+                showBackButton: widget.showBackButton,
+                strictbounds: widget.strictbounds,
+                topCardColor: widget.topCardColor,
+                topCardMargin: widget.topCardMargin,
+                topCardShape: widget.topCardShape,
+                types: widget.types,
+                onGetDetailsByPlaceId: (placesDetails) async {
+                  if (placesDetails == null) {
+                    logger.e("placesDetails is null");
+                    return;
+                  }
+                  _initialPosition = LatLng(
+                    placesDetails.result.geometry?.location.lat ?? 0,
+                    placesDetails.result.geometry?.location.lng ?? 0,
+                  );
+                  final controller = await _controller.future;
+                  controller.animateCamera(
+                      CameraUpdate.newCameraPosition(cameraPosition()));
+                  _address = placesDetails.result.formattedAddress ?? "";
+                  widget.onSuggestionSelected?.call(placesDetails);
+                  setState(() {});
+                },
+              ),
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Card(
+                  color: Theme.of(context).primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(360),
+                  ),
+                  elevation: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.5),
+                    child: PopupMenuButton(
+                      tooltip: 'Map Type',
+                      initialValue: _mapType,
+                      icon: Icon(
+                        Icons.layers,
+                        color: Theme.of(context).colorScheme.onPrimary,
+                      ),
+                      onSelected: (MapType mapType) {
+                        setState(() {
+                          _mapType = mapType;
+                        });
+                      },
+                      itemBuilder: (context) => const [
+                        PopupMenuItem(
+                          value: MapType.normal,
+                          child: Text('Normal'),
+                        ),
+                        PopupMenuItem(
+                          value: MapType.hybrid,
+                          child: Text('Hybrid'),
+                        ),
+                        PopupMenuItem(
+                          value: MapType.satellite,
+                          child: Text('Satellite'),
+                        ),
+                        PopupMenuItem(
+                          value: MapType.terrain,
+                          child: Text('Terrain'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FloatingActionButton(
+                  tooltip: 'My Location',
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  onPressed: () async {
+                    await Geolocator.requestPermission();
+                    Position position = await Geolocator.getCurrentPosition(
+                      desiredAccuracy: widget.desiredAccuracy,
+                    );
+                    LatLng latLng =
+                        LatLng(position.latitude, position.longitude);
+                    _initialPosition = latLng;
+                    final controller = await _controller.future;
+                    controller.animateCamera(
+                        CameraUpdate.newCameraPosition(cameraPosition()));
+                    _decodeAddress(Location(
+                        lat: position.latitude, lng: position.longitude));
+                    setState(() {});
+                  },
+                  child: const Icon(Icons.my_location),
+                ),
+              ),
+              Card(
+                margin: widget.bottomCardMargin,
+                shape: widget.bottomCardShape,
+                color: widget.bottomCardColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      title: Text(_address),
+                      trailing: IconButton(
+                        tooltip: widget.bottomCardTooltip,
+                        icon: widget.bottomCardIcon,
+                        onPressed: () async {
+                          widget.onNext.call(_geocodingResult);
+                          if (widget.canPopOnNextButtonTaped) {
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                    ),
+                    if (widget.showMoreOptions &&
+                        _geocodingResultList.isNotEmpty)
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text(widget.dialogTitle),
+                              scrollable: true,
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: _geocodingResultList.map((element) {
+                                  return ListTile(
+                                    title: Text(element.formattedAddress ?? ""),
+                                    onTap: () {
+                                      _address = element.formattedAddress ?? "";
+                                      _geocodingResult = element;
+                                      setState(() {});
+                                      Navigator.pop(context);
+                                    },
+                                  );
+                                }).toList(),
+                              ),
+                              actions: [
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ],
+>>>>>>> Stashed changes
                             ),
+                          );
+                        },
+                        child: Chip(
+                          label: Text(
+                            "Tap to show ${(_geocodingResultList.length - 1)} more result options",
                           ),
                         ),
                       ),
+<<<<<<< Updated upstream
                       const Spacer(),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
@@ -680,5 +962,15 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
             child: CircularProgressIndicator(
             color: Color.fromRGBO(240, 165, 0, 1),
           ));
+=======
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+>>>>>>> Stashed changes
   }
 }
