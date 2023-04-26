@@ -1,11 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
-import 'package:flutter/services.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
-=======
->>>>>>> Stashed changes
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart';
@@ -82,13 +77,7 @@ class MapLocationPicker extends StatefulWidget {
   final Function(PlacesDetailsResponse?)? onSuggestionSelected;
 
   /// On Next Page callback
-<<<<<<< Updated upstream
-  final Function(
-    GeocodingResult?,
-  ) onNext;
-=======
   final Function(GeocodingResult?) onNext;
->>>>>>> Stashed changes
 
   /// Show back button (default: true)
   final bool showBackButton;
@@ -161,14 +150,6 @@ class MapLocationPicker extends StatefulWidget {
   /// Hide Suggestions on keyboard hide
   final bool hideSuggestionsOnKeyboardHide;
 
-<<<<<<< Updated upstream
-  ///map style
-  String? mapStyle;
-
-  /// map ontap function
-  bool onTap;
-  MapLocationPicker({
-=======
   /// Map type (default: MapType.normal)
   final MapType mapType;
 
@@ -179,7 +160,6 @@ class MapLocationPicker extends StatefulWidget {
   final Map<String, LatLng>? additionalMarkers;
 
   const MapLocationPicker({
->>>>>>> Stashed changes
     Key? key,
     this.desiredAccuracy = LocationAccuracy.high,
     required this.apiKey,
@@ -229,13 +209,9 @@ class MapLocationPicker extends StatefulWidget {
     this.components = const [],
     this.strictbounds = false,
     this.hideSuggestionsOnKeyboardHide = false,
-<<<<<<< Updated upstream
-    this.onTap = true,
-=======
     this.mapType = MapType.normal,
     this.searchController,
     this.additionalMarkers,
->>>>>>> Stashed changes
   }) : super(key: key);
 
   @override
@@ -243,43 +219,11 @@ class MapLocationPicker extends StatefulWidget {
 }
 
 class _MapLocationPickerState extends State<MapLocationPicker> {
-  @override
-  void initState() {
-    currentPositionLatLng();
-    // _setMarkerIcon();
-    // currentPositionLatLng();
-    super.initState();
-    // rootBundle.loadString('assets/map_style.txt').then((string) {
-    //   widget.mapStyle = string;
-    // });
-  }
-
   /// Map controller for movement & zoom
   final Completer<GoogleMapController> _controller = Completer();
 
   /// initial latitude & longitude
-<<<<<<< Updated upstream
-  LatLng? _initialPosition;
-
-  currentPositionLatLng() async {
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.unableToDetermine ||
-        permission == LocationPermission.deniedForever ||
-        permission == LocationPermission.denied) {
-      await Geolocator.requestPermission();
-    }
-    if (_initialPosition == null) {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      LatLng latLng = LatLng(position.latitude, position.longitude);
-      _initialPosition = latLng;
-      setState(() {});
-    } else {}
-  }
-=======
   late LatLng _initialPosition = const LatLng(28.8993468, 76.6250249);
->>>>>>> Stashed changes
 
   /// initial address text
   late String _address = "Tap on map to get address";
@@ -299,11 +243,7 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
   /// Camera position moved to location
   CameraPosition cameraPosition() {
     return CameraPosition(
-<<<<<<< Updated upstream
-      target: _initialPosition!,
-=======
       target: _initialPosition,
->>>>>>> Stashed changes
       zoom: _zoom,
     );
   }
@@ -352,73 +292,10 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
         _geocodingResultList = response.results;
       }
       setState(() {});
-<<<<<<< Updated upstream
     } catch (e) {
       logger.e(e);
     }
   }
-
-  /// Get address details from place id
-  void _getDetailsByPlaceId(String placeId) async {
-    try {
-      final places = GoogleMapsPlaces(
-        apiKey: widget.apiKey,
-        httpClient: widget.placesHttpClient,
-        apiHeaders: widget.placesApiHeaders,
-        baseUrl: widget.placesBaseUrl,
-      );
-      final response = await places.getDetailsByPlaceId(
-        placeId,
-        region: widget.region,
-        sessionToken: widget.sessionToken,
-        language: widget.language,
-        fields: widget.fields,
-      );
-
-      /// When get any error from the API, show the error in the console.
-      if (response.hasNoResults ||
-          response.isDenied ||
-          response.isInvalid ||
-          response.isNotFound ||
-          response.unknownError ||
-          response.isOverQueryLimit) {
-        logger.e(response.errorMessage);
-        _address = response.status;
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response.errorMessage ??
-                  "Address not found, something went wrong!"),
-            ),
-          );
-        }
-        return;
-      }
-
-      _initialPosition = LatLng(
-        response.result.geometry?.location.lat ?? 0,
-        response.result.geometry?.location.lng ?? 0,
-      );
-      final controller = await _controller.future;
-      controller
-          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition()));
-      _address = response.result.formattedAddress ?? "";
-      widget.onSuggestionSelected?.call(response);
-      setState(() {});
-=======
->>>>>>> Stashed changes
-    } catch (e) {
-      logger.e(e);
-    }
-  }
-
-  /// marker icon custom
-  Set<Marker> _markers = {};
-  BitmapDescriptor? _markerIcon;
-  // void _setMarkerIcon() async {
-  //   _markerIcon = await BitmapDescriptor.fromAssetImage(
-  //       const ImageConfiguration(devicePixelRatio: 2.5), 'assets/marker.png');
-  // }
 
   @override
   void initState() {
@@ -430,149 +307,14 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< Updated upstream
-    return _initialPosition != null
-        ? MultiProvider(
-            providers: [
-              /// Change notifier for place search results
-              ChangeNotifierProvider(
-                create: (_) => AutoCompleteState(
-                  baseUrl: widget.placesBaseUrl,
-                  apiHeaders: widget.placesApiHeaders,
-                  httpClient: widget.placesHttpClient,
-                ),
-              ),
-            ],
-            child: Scaffold(
-              body: Stack(
-                children: [
-                  /// Google map view
-                  GoogleMap(
-                    minMaxZoomPreference: widget.minMaxZoomPreference,
-                    onCameraMove: (CameraPosition position) {
-                      /// set zoom level
-                      _zoom = position.zoom;
-                    },
-                    initialCameraPosition: CameraPosition(
-                      target: _initialPosition!,
-                      zoom: _zoom,
-                    ),
-                    onTap: widget.onTap!
-                        ? (LatLng position) async {
-                            _initialPosition = position;
-                            final controller = await _controller.future;
-                            controller.animateCamera(
-                                CameraUpdate.newCameraPosition(
-                                    cameraPosition()));
-                            _decodeAddress(Location(
-                                lat: position.latitude,
-                                lng: position.longitude));
-                            setState(() {});
-                          }
-                        : (LatLng position) {
-                            _initialPosition = _initialPosition;
-                          },
-                    onMapCreated: (GoogleMapController controller) async {
-                      _controller.complete(controller);
-                      // controller.setMapStyle(widget.mapStyle);
-                    },
-                    markers: {
-                      Marker(
-                        markerId: const MarkerId('one'),
-                        position: _initialPosition!,
-                        // icon: _markerIcon!,
-                      )
-                    },
-                    myLocationButtonEnabled: false,
-                    myLocationEnabled: true,
-                    zoomControlsEnabled: false,
-                    padding: widget.padding,
-                    compassEnabled: widget.compassEnabled,
-                    liteModeEnabled: widget.liteModeEnabled,
-                    mapType: _mapType,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      SafeArea(
-                        child: Card(
-                          margin: widget.topCardMargin,
-                          shape: widget.topCardShape,
-                          color: widget.topCardColor,
-                          child: ListTile(
-                            minVerticalPadding: 0,
-                            contentPadding:
-                                const EdgeInsets.only(right: 4, left: 4),
-                            leading: widget.showBackButton
-                                ? const BackButton()
-                                : widget.backButton,
-                            title: ClipRRect(
-                              borderRadius: widget.borderRadius,
-                              child: Consumer<AutoCompleteState>(
-                                builder: (context, state, child) {
-                                  return FormBuilderTypeAhead<Prediction>(
-                                    decoration: InputDecoration(
-                                      hintText: widget.searchHintText,
-                                      border: InputBorder.none,
-                                      filled: true,
-                                      suffixIcon: IconButton(
-                                        icon: const Icon(Icons.close),
-                                        onPressed: () async {
-                                          _searchController.clear();
-                                        },
-                                      ),
-                                    ),
-                                    name: 'Search',
-                                    controller: _searchController,
-                                    selectionToTextTransformer: (result) {
-                                      return result.description ?? "";
-                                    },
-                                    itemBuilder: (context, continent) {
-                                      return ListTile(
-                                        title:
-                                            Text(continent.description ?? ""),
-                                      );
-                                    },
-                                    suggestionsCallback: (query) async {
-                                      await state.search(
-                                        query,
-                                        widget.apiKey,
-                                        language: widget.language,
-                                        sessionToken: widget.sessionToken,
-                                        region: widget.region,
-                                        components: widget.components,
-                                        location: widget.location,
-                                        offset: widget.offset,
-                                        origin: widget.origin,
-                                        radius: widget.radius,
-                                        strictbounds: widget.strictbounds,
-                                        types: widget.types,
-                                      );
-                                      return state.results;
-                                    },
-                                    onSuggestionSelected: (value) async {
-                                      _searchController.selection =
-                                          TextSelection.collapsed(
-                                              offset: _searchController
-                                                  .text.length);
-                                      _getDetailsByPlaceId(value.placeId ?? "");
-                                      setState(() {});
-                                    },
-                                    hideSuggestionsOnKeyboardHide:
-                                        widget.hideSuggestionsOnKeyboardHide,
-                                  );
-                                },
-                              ),
-=======
     final additionalMarkers = widget.additionalMarkers?.entries
-            .map(
-              (e) => Marker(
-                markerId: MarkerId(e.key),
-                position: e.value,
-              ),
-            )
-            .toList() ??
+        .map(
+          (e) => Marker(
+        markerId: MarkerId(e.key),
+        position: e.value,
+      ),
+    )
+        .toList() ??
         [];
 
     final markers = Set<Marker>.from(additionalMarkers);
@@ -637,7 +379,7 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                 components: widget.components,
                 fields: widget.fields,
                 hideSuggestionsOnKeyboardHide:
-                    widget.hideSuggestionsOnKeyboardHide,
+                widget.hideSuggestionsOnKeyboardHide,
                 language: widget.language,
                 location: widget.location,
                 origin: widget.origin,
@@ -727,7 +469,7 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                       desiredAccuracy: widget.desiredAccuracy,
                     );
                     LatLng latLng =
-                        LatLng(position.latitude, position.longitude);
+                    LatLng(position.latitude, position.longitude);
                     _initialPosition = latLng;
                     final controller = await _controller.future;
                     controller.animateCamera(
@@ -790,7 +532,6 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                                   },
                                 ),
                               ],
->>>>>>> Stashed changes
                             ),
                           );
                         },
@@ -800,169 +541,6 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
                           ),
                         ),
                       ),
-<<<<<<< Updated upstream
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Card(
-                          color: Theme.of(context).primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(360),
-                          ),
-                          elevation: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.5),
-                            child: PopupMenuButton(
-                              tooltip: 'Map Type',
-                              initialValue: _mapType,
-                              icon: const Icon(
-                                Icons.layers,
-                                color: Color(0xffD50814),
-                              ),
-                              onSelected: (MapType mapType) {
-                                setState(() {
-                                  _mapType = mapType;
-                                });
-                              },
-                              itemBuilder: (context) => const [
-                                PopupMenuItem(
-                                  value: MapType.normal,
-                                  child: Text('Normal'),
-                                ),
-                                PopupMenuItem(
-                                  value: MapType.hybrid,
-                                  child: Text('Hybrid'),
-                                ),
-                                PopupMenuItem(
-                                  value: MapType.satellite,
-                                  child: Text('Satellite'),
-                                ),
-                                PopupMenuItem(
-                                  value: MapType.terrain,
-                                  child: Text('Terrain'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: FloatingActionButton(
-                          tooltip: 'My Location',
-                          backgroundColor: Theme.of(context).primaryColor,
-                          foregroundColor:
-                              Theme.of(context).colorScheme.onPrimary,
-                          onPressed: () async {
-                            await Geolocator.requestPermission();
-                            Position position =
-                                await Geolocator.getCurrentPosition(
-                              desiredAccuracy: widget.desiredAccuracy,
-                            );
-                            LatLng latLng =
-                                LatLng(position.latitude, position.longitude);
-                            _initialPosition = latLng;
-                            final controller = await _controller.future;
-                            controller.animateCamera(
-                                CameraUpdate.newCameraPosition(
-                                    cameraPosition()));
-                            _decodeAddress(Location(
-                                lat: position.latitude,
-                                lng: position.longitude));
-                            setState(() {});
-                          },
-                          child: const Icon(
-                            Icons.my_location,
-                            color: Color(0xffD50814),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        margin: widget.bottomCardMargin,
-                        shape: widget.bottomCardShape,
-                        color: widget.bottomCardColor,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ListTile(
-                              title: Text(
-                                _address,
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              trailing: IconButton(
-                                tooltip: widget.bottomCardTooltip,
-                                icon: widget.bottomCardIcon,
-                                onPressed: () async {
-                                  widget.onNext.call(_geocodingResult);
-                                  if (widget.canPopOnNextButtonTaped) {
-                                    Navigator.pop(context);
-                                  }
-                                },
-                              ),
-                            ),
-                            if (widget.showMoreOptions &&
-                                _geocodingResultList.isNotEmpty)
-                              GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => AlertDialog(
-                                      title: Text(widget.dialogTitle),
-                                      scrollable: true,
-                                      content: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children:
-                                            _geocodingResultList.map((element) {
-                                          return ListTile(
-                                            title: Text(
-                                                element.formattedAddress ?? ""),
-                                            onTap: () {
-                                              _address =
-                                                  element.formattedAddress ??
-                                                      "";
-                                              _geocodingResult = element;
-                                              setState(() {});
-                                              Navigator.pop(context);
-                                            },
-                                          );
-                                        }).toList(),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          child: const Text(
-                                            'Cancel',
-                                            style: TextStyle(
-                                                color: Color.fromRGBO(
-                                                    240, 165, 0, 1)),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                child: Chip(
-                                  label: Text(
-                                    "Tap to show ${(_geocodingResultList.length - 1)} more result options",
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )
-        : const Center(
-            child: CircularProgressIndicator(
-            color: Color.fromRGBO(240, 165, 0, 1),
-          ));
-=======
                   ],
                 ),
               ),
@@ -971,6 +549,5 @@ class _MapLocationPickerState extends State<MapLocationPicker> {
         ],
       ),
     );
->>>>>>> Stashed changes
   }
 }
